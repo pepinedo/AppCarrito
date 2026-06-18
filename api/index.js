@@ -7,6 +7,7 @@ import cors from 'cors';
 import logger from 'morgan';
 import { log } from 'console';
 import usersRoutes from './modules/users/users.routes.js';
+import authRoutes from './modules/auth/auth.routes.js';
 
 //----------------------------------------------------------------
 // Para la ruta relativa de public
@@ -35,6 +36,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 //----------------------------------------------------------------
 // endpoints
 app.use("/users", usersRoutes)
+app.use("/auth", authRoutes)
 
 app.get('/', (req, res) => {
   console.log("HOLI");
