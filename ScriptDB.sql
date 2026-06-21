@@ -57,3 +57,17 @@ CREATE TABLE IF NOT EXISTS plate_cart ( -- Corregido el espacio en "IF NOT EXIST
     FOREIGN KEY (cartId) REFERENCES carts(cartId) ON DELETE CASCADE,
     FOREIGN KEY (plateId) REFERENCES plates(plateId) ON DELETE CASCADE -- Corregido: apuntaba a 'id' que ya no existe
 );
+
+
+CREATE TABLE ingredient_cart (
+    cartId INT NOT NULL,
+    ingredientId INT NOT NULL,
+    isSelected BOOL,
+    
+    PRIMARY KEY (cartId, ingredientId),
+    
+    CONSTRAINT fk_cart FOREIGN KEY (cartId) 
+        REFERENCES carts(cartId) ON DELETE CASCADE,
+    CONSTRAINT fk_ingredient FOREIGN KEY (ingredientId) 
+        REFERENCES ingredients(ingredientId) ON DELETE CASCADE
+);

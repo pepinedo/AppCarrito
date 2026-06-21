@@ -6,8 +6,11 @@ import { fileURLToPath } from 'url';
 import cors from 'cors';
 import logger from 'morgan';
 import { log } from 'console';
+
 import usersRoutes from './modules/users/users.routes.js';
 import authRoutes from './modules/auth/auth.routes.js';
+import cartRoutes from './modules/cart/cart.routes.js';
+import ingredientRoutes from './modules/ingredient/ingredient.routes.js';
 
 //----------------------------------------------------------------
 // Para la ruta relativa de public
@@ -37,6 +40,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 // endpoints
 app.use("/users", usersRoutes)
 app.use("/auth", authRoutes)
+app.use("/cart", cartRoutes)
+app.use("/ingredient", ingredientRoutes)
 
 app.get('/', (req, res) => {
   console.log("HOLI");
@@ -45,49 +50,6 @@ app.get('/', (req, res) => {
   });
 });
 //----------------------------------------------------------------
-
-
-
-// ------------------------
-// get y set de ejemplo
-// ------------------------
-app.get('/users', (req, res)=>{
-
-  var user = [
-    {
-      "userId":1,
-      "username":"Paquito"
-    }
-  ]
-  try{
-    res.status(200).json({
-      user
-    })
-
-  }
-  catch (ex){
-    console.log(ex)
-    res.status(500);
-  }
-})
-
-app.post('/users', (req, res)=>{
-  var ingredient = req.body
-
-  try{
-    res.status(200).json(ingredient)
-  }
-  catch (ex){
-    console.log(ex)
-    res.status(500);
-  }
-})
-
-
-
-
-
-
 
 
 //----------------------------------------------------------------
