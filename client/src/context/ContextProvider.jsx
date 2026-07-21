@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState } from "react";
 
 export const MainContext = createContext();
 
@@ -6,24 +6,21 @@ export const ContextProvider = ({ children }) => {
 
     const [isLoading, setIsLoading] = useState(true);
     const [user, setUser] = useState(null);
-    
-    const fetchUser = async () => {
-        setIsLoading(true);
-        // setUser({
-        //     Id: 1,
-        //     username: "pedro",
-        // })
-        setIsLoading(false);
+ 
+    const login = (userData) => {
+        setUser(userData);
     }
-    
-    useEffect(() => {
-        fetchUser();
-    }, []);
 
+    const logout = () => {
+        setUser(null);
+    }
 
     return (
         <MainContext.Provider value={{
-            user
+            isLoading,
+            user,
+            login,
+            logout
         }}>
             {!isLoading && children}
         </MainContext.Provider>

@@ -1,5 +1,5 @@
 import executeQuery, { dbPool } from "../../services/dbService.js";
-import jwt from "jsonwebtoken";
+import { generateAccessToken, generateRefreshToken, generateBothTokens } from "../../services/jwtService.js";
 
 class UsersController {
 
@@ -17,38 +17,50 @@ class UsersController {
 
             // User doesn't exist
             if (result.length === 0)
-                res.status(401).json({ message: "Credenciales incorrectas" });
-            else 
-            {
-                // User exists but is not verified
-                if (result[0].is_verified !== 1) 
-                {
-                    res.status(403).json({ message: "Usuario no verificado" });
-                    return;
-                }
-            }
+                return res.status(401).json({ message: "Credenciales incorrectas" });
+
+            // User exists but is not verified
+            if (result[0].is_verified !== 1) 
+                return res.status(403).json({ message: "Usuario no verificado" });
 
             // Check password
             let hash = result[0].password;
             let match = await bcrypt.compare(password, hash);
 
+            // Contraseña incorrecta
             if (!match)
-                res.status(401).json({ message: "Credenciales incorrectas" });
-            else {
-                let payload = {
+                return res.status(401).json({ message: "Credenciales incorrectas" });
+
+            let payload = {
+                id: result[0].user_id,
+                is_admin: result[0].is_admin
+            };
+
+            const accessToken = generateAccessToken(payload);
+            const refreshToken = generateRefreshToken(payload);
+
+            // 3. Setear el Refresh Token en una Cookie HTTP-Only segura
+            res.cookie("refreshToken", refreshToken, {
+                httpOnly: true,                                // No accesible por JS (Anti-XSS)
+                secure: process.env.NODE_ENV === "production", // Solo HTTPS en producción
+                sameSite: "strict",                            // Anti-CSRF
+                maxAge: 7 * 24 * 60 * 60 * 1000                // Expiración en ms (7 días)
+            });
+
+            return res.status(200).json({
+                status: "success",
+                message: "Login exitoso",
+                accessToken,
+                user: {
                     id: result[0].user_id,
-                    is_admin: result[0].is_admin
-                };
-                const token = jwt.sign(payload, process.env.TOKEN_KEY, {
-                    expiresIn: "2d",
-                });
-                res.status(200).json(token);
-            }
+                    username: result[0].username,
+                }
+            });
         }    
         catch (error) 
         {
             console.log(error);
-            res.status(500).json({ message: "Error del servidor" });
+            return res.status(500).json({ message: "Error del servidor" });
         }
     };
 
