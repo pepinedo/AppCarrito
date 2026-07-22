@@ -9,10 +9,13 @@
 
   // Función de Logout
   export const logout = async () => {
-    try {
-      await api.post('/logout'); // Tu backend debería borrar la cookie del refreshToken
-    } finally {
-      setAccessToken(null);
-      setUser(null);
+    try 
+    {
+        await api.post('/logout'); // Tu backend debería borrar la cookie del refreshToken
+    } 
+    finally 
+    {
+        setAccessToken(null);
+        setUser(null);
     }
   };

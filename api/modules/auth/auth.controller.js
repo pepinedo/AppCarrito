@@ -1,5 +1,7 @@
 import executeQuery, { dbPool } from "../../services/dbService.js";
 import { generateAccessToken, generateRefreshToken, generateBothTokens } from "../../services/jwtService.js";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 class UsersController {
 
@@ -67,7 +69,10 @@ class UsersController {
     register = async (req, res) => {
         const { username, email, password } = req.body;
 
-        let sql = "INSERT INTO user (username, email, password) VALUES (?,?,?,?,?)";
+        if(!username || !email || !password)
+            return res.status(400).json({ message: "Todos los campos son obligatorios" });
+
+        let sql = "INSERT INTO users (username, email, password) VALUES (?,?,?)";
 
         try 
         {

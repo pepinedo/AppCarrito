@@ -1,5 +1,5 @@
 import express from 'express';
-import setupConfiguration from './modules/serUpConfiguration.js';
+import setupConfiguration from './modules/setUpConfiguration.js';
 import setupMiddlewares from './modules/setUpMiddlewares.js';
 import setupRoutes from './modules/setUpRoutes.js';
 import setupErrorHandlers from './modules/setUpErrorHandlers.js';
